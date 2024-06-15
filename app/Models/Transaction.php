@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\TransactionDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,6 +29,6 @@ class Transaction extends Model
 
     public function details(): HasMany
     {
-        return $this->HasMany(TransactionDetails::class, 'transaction_id', 'id');
+        return $this->HasMany(TransactionDetail::class, 'transaction_id', 'id');
     }
 }

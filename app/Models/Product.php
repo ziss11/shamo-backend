@@ -21,6 +21,8 @@ class Product extends Model
         'category_id',
     ];
 
+
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
@@ -29,10 +31,5 @@ class Product extends Model
     public function galleries(): HasMany
     {
         return $this->hasMany(ProductGallery::class, 'product_id', 'id');
-    }
-
-    public function transactionDetails(): BelongsTo
-    {
-        return $this->belongsTo(TransactionDetail::class, 'id', 'product_id');
     }
 }

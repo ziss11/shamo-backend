@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Transactions extends Model
+class Transaction extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
         'user_id',
         'address',
         'payment',
@@ -27,7 +26,7 @@ class Transactions extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function transactionDetails(): HasMany
+    public function details(): HasMany
     {
         return $this->HasMany(TransactionDetails::class, 'transaction_id', 'id');
     }

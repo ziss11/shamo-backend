@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Http\Requests\Api\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -70,5 +72,35 @@ class UserController extends Controller
                 'message' => 'Terjadi kesalahan pada server',
             ], 500);
         }
+    }
+
+    public function fetch(): JsonResponse
+    {
+        $user = Auth::user();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data profile berhasil diambil',
+            'data' => $user,
+        ], 200);
+    }
+
+    public function update(UpdateUserRequest $request): JsonResponse
+    {
+        $user = Auth::user();
+        $user->update($request->all());
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data profile berhasil diperbarui',
+            'data' => $user,
+        ], 200);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logout Berhasil',
+        ], 200);
     }
 }

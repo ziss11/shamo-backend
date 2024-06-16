@@ -1,17 +1,18 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductCategoryController;
 
 // Users
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [UserController::class, 'fetch']);
+    Route::patch('/user', [UserController::class, 'update']);
+    Route::delete('/logout', [UserController::class, 'logout']);
+});
 
 // Products
 Route::get('/products', [ProductController::class, 'all']);

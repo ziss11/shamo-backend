@@ -76,31 +76,52 @@ class UserController extends Controller
 
     public function fetch(): JsonResponse
     {
-        $user = Auth::user();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data profile berhasil diambil',
-            'data' => $user,
-        ], 200);
+        try {
+            $user = Auth::user();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data profile berhasil diambil',
+                'data' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
     }
 
     public function update(UpdateUserRequest $request): JsonResponse
     {
-        $user = Auth::user();
-        $user->update($request->all());
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data profile berhasil diperbarui',
-            'data' => $user,
-        ], 200);
+        try {
+            $user = Auth::user();
+            $user->update($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data profile berhasil diperbarui',
+                'data' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
     }
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Logout Berhasil',
-        ], 200);
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Logout Berhasil',
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Terjadi kesalahan pada server',
+            ], 500);
+        }
     }
 }

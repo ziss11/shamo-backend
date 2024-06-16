@@ -2,35 +2,32 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Auth;
 
-class ProductCategoryController extends Controller
+class TransactionController extends Controller
 {
-    public function all(Request $request): JsonResponse
+    public function all(Request $request)
     {
         try {
             $limit = $request->input('limit', 6);
-            $name = $request->input('name');
-            $showProduct = $request->input('show_product', false);
+            $status = $request->input('status');
 
-            $categories = ProductCategory::query();
+            $transactions = Transaction::with(['details.product'])->where('user_id', Auth::user()->id);
 
-            if ($name) {
-                $categories->where('name', 'like', '%' . $name . '%');
-            }
-
-            if ($showProduct) {
-                $categories->with('products');
+            if ($status) {
+                $transactions->where('status', $status);
             }
 
             return response()->json([
                 'status' => 'success',
-                'data' => $categories->paginate($limit)
+                'data' => $transactions->paginate($limit),
             ], 200);
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Terjadi kesalahan pada server',
@@ -41,20 +38,20 @@ class ProductCategoryController extends Controller
     public function show(string $id): JsonResponse
     {
         try {
-            $category = ProductCategory::with('products')->find($id);
+            $transaction = Transaction::with('details.product')->find($id);
 
-            if ($category) {
+            if ($transaction) {
                 return response()->json([
                     'status' => 'success',
-                    'data' => $category
+                    'data' => $transaction
                 ], 200);
             } else {
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'Kategori Produk tidak ditemukan'
+                    'message' => 'Transaksi tidak ditemukan'
                 ], 404);
             }
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Terjadi kesalahan pada server',

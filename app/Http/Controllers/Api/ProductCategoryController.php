@@ -13,11 +13,16 @@ class ProductCategoryController extends Controller
     {
         $limit = $request->input('limit', 6);
         $name = $request->input('name');
+        $showProduct = $request->input('show_product', false);
 
         $categories = ProductCategory::query();
 
         if ($name) {
             $categories->where('name', 'like', '%' . $name . '%');
+        }
+
+        if ($showProduct) {
+            $categories->with('products');
         }
 
         return response()->json([
@@ -28,7 +33,8 @@ class ProductCategoryController extends Controller
 
     public function show(string $id): JsonResponse
     {
-        $category = ProductCategory::find($id);
+        $category = ProductCategory::with('products')->find($id);
+
 
         if ($category) {
             return response()->json([

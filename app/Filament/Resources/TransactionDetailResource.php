@@ -2,32 +2,41 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductGalleryResource\Pages;
-use App\Filament\Resources\ProductGalleryResource\RelationManagers;
-use App\Models\ProductGallery;
+use App\Filament\Resources\TransactionDetailResource\Pages;
+use App\Filament\Resources\TransactionDetailResource\RelationManagers;
+use App\Models\TransactionDetail;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProductGalleryResource extends Resource
+class TransactionDetailResource extends Resource
 {
-    protected static ?string $model = ProductGallery::class;
+    protected static ?string $model = TransactionDetail::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
                 Forms\Components\Select::make('product_id')
                     ->relationship('product', 'name')
                     ->required(),
-                Forms\Components\FileUpload::make('url')
-                    ->label('Image')
-                    ->image()
+                Forms\Components\Select::make('transaction_id')
+                    ->relationship('transaction', 'id')
                     ->required(),
+                Forms\Components\TextInput::make('quantity')
+                    ->required()
+                    ->numeric(),
             ]);
     }
 
@@ -35,20 +44,18 @@ class ProductGalleryResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user.name')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('product.name')
                     ->numeric()
-                    ->searchable()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('url')
-                    ->square()
-                    ->url(fn ($record) => $record->url)
-                    ->label('Image')
-                    ->width(350)
-                    ->height(250),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('transaction.id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -63,7 +70,6 @@ class ProductGalleryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -82,9 +88,9 @@ class ProductGalleryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProductGalleries::route('/'),
-            'create' => Pages\CreateProductGallery::route('/create'),
-            'edit' => Pages\EditProductGallery::route('/{record}/edit'),
+            'index' => Pages\ListTransactionDetails::route('/'),
+            'create' => Pages\CreateTransactionDetail::route('/create'),
+            'edit' => Pages\EditTransactionDetail::route('/{record}/edit'),
         ];
     }
 }

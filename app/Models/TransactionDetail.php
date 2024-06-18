@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Product;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TransactionDetail extends Model
 {
@@ -19,8 +22,18 @@ class TransactionDetail extends Model
         'quantity'
     ];
 
-    public function product(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(Product::class, 'id', 'product_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 }

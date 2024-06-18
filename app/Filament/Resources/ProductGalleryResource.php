@@ -2,39 +2,31 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Models\Product;
+use App\Filament\Resources\ProductGalleryResource\Pages;
+use App\Filament\Resources\ProductGalleryResource\RelationManagers;
+use App\Models\ProductGallery;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class ProductResource extends Resource
+class ProductGalleryResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = ProductGallery::class;
 
-    protected static ?string $navigationIcon = 'heroicon-c-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->prefix('Rp'),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('tags')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name')
+                Forms\Components\Select::make('product_id')
+                    ->relationship('product', 'name')
+                    ->required(),
+                Forms\Components\FileUpload::make('url')
+                    ->label('Image')
+                    ->image()
                     ->required(),
             ]);
     }
@@ -43,16 +35,15 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->money('IDR', locale: 'id')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('tags')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('category.name')
+                Tables\Columns\TextColumn::make('product.name')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('url')
+                    ->square()
+                    ->url(fn ($record) => $record->url)
+                    ->label('Image')
+                    ->width(350)
+                    ->height(250),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -90,9 +81,9 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ListProductGalleries::route('/'),
+            'create' => Pages\CreateProductGallery::route('/create'),
+            'edit' => Pages\EditProductGallery::route('/{record}/edit'),
         ];
     }
 }

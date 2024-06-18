@@ -49,6 +49,7 @@ class ProductResource extends Resource
                     ->money('IDR', locale: 'id')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tags')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')
                     ->numeric()

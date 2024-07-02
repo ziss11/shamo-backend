@@ -27,4 +27,4 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/categories', [ProductCategoryController::class, 'all']);
 Route::get('/categories/{id}', [ProductCategoryController::class, 'show']);
 
-Route::post('/auth/google/callback', [SocialiteController::class, 'callback']);
+Route::post('/auth/google', [SocialiteController::class, 'callback']);

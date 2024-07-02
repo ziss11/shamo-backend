@@ -19,7 +19,7 @@ class ProductController extends Controller
             $tags = $request->input('tags');
             $price_from = $request->input('price_from');
             $price_to = $request->input('price_to');
-            $categories = $request->input('categories');
+            $category = $request->input('category');
 
             $products = Product::with(['category', 'galleries']);
 
@@ -43,8 +43,10 @@ class ProductController extends Controller
                 $products->where('price', '<=', $price_to);
             }
 
-            if ($categories) {
-                $products->where('categories', $categories);
+            if ($category) {
+                $products->whereHas('category', function ($query) use ($category) {
+                    $query->where('name', $category);
+                });
             }
 
             return response()->json([

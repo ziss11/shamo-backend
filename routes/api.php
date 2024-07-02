@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\ProductCategoryController;
+use App\Http\Controllers\Api\SocialiteController;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
@@ -25,3 +26,5 @@ Route::get('/products/{id}', [ProductController::class, 'show']);
 
 Route::get('/categories', [ProductCategoryController::class, 'all']);
 Route::get('/categories/{id}', [ProductCategoryController::class, 'show']);
+
+Route::post('/auth/google/callback', [SocialiteController::class, 'callback']);
